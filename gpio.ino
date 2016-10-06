@@ -35,7 +35,7 @@ void gpio_set_mode(uint8_t pin, uint8_t out_or_in) { //pinMode()
         if(out_or_in) {
             DDRB |= ( 1<<(pin-8) );      
         } else {
-            DDRB &= ( 1<<(pin-8) ); //write a macro for this operation instead?
+            DDRB &= ~( 1<<(pin-8) ); //write a macro for this operation instead?
         }
     } else if(pin < 20){ //analog pins A0 to A5 (numbered 14 to 19?) map to port C
         if(out_or_in) {
