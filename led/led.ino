@@ -6,7 +6,6 @@
  *  -Turn LED on or off.
  *  -Toggle LED state.
  */
- #include <gpio.h>
 
 #define LED 1<<5
 #include "gpio.h"
