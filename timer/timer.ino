@@ -11,10 +11,12 @@
 void timer_init();
 void timer_reset();
 void timer_set(uint16_t period);
-
-int counter_max;
+static const float CLOCK = 8E6;
+static const int PRESCALER = 64;
+static const float CNTR_FREQ = CLOCK/PRESCALER;
+static const int CNTR_MAX = 256;
 volatile uint8_t counter;
-volatile uint8_t cycle_count;
+volatile uint16_t cycle_count;
 
 ISR(TIMER0_COMPA_vect){
 //    counter += 1;
@@ -24,11 +26,12 @@ ISR(TIMER0_COMPA_vect){
 void setup() {
     Serial.begin(9600);
     timer_init();
-    timer_set(100);
+    timer_set(1);
 }
 
 void loop() {
     Serial.println(cycle_count);
+//Serial.println((uint16_t) CNTR_FREQ/1000);
 //    Serial.println(TCNT0);
 }
 
@@ -37,7 +40,7 @@ void timer_init(){
     // Toggle OC0A on match, CTC mode
     TCCR0A = B01000010;
     // Select clock with 1024 prescaler
-    TCCR0B = B00000101;
+    TCCR0B = B00000011;
     // Reset timer counter
     TCNT0 = B00000000;
 }
@@ -48,6 +51,6 @@ void timer_reset(){
 }
 
 void timer_set(uint16_t period){
-    OCR0A = (period*10/1.28);
+    OCR0A = CNTR_FREQ*period/1000; //left as a float so that the math with CNTR_FREQ does not overflow an integer
 //    counter_max = period;
 }
