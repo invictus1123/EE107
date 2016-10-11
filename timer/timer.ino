@@ -11,43 +11,49 @@
 void timer_init();
 void timer_reset();
 void timer_set(uint16_t period);
-
-int counter_max;
 volatile uint8_t counter;
-volatile uint8_t cycle_count;
+volatile uint16_t cycle_count;
+#define PRESCALER 8 //prescaler for the timer.
+#define CLOCK 16E6 //Hz. 8MHz nominal (Pro Mini 8MHz), 16MHz for Arduino Uno debugging.
+#define CNTR_MAX 65535 //the maximum value the counter can take before overflowing. 16 bit = 2^16-1; 8 bit = 2^8-1.
+static const float CNTR_FREQ = CLOCK/(PRESCALER * CNTR_MAX);//the frequency in Hz of the counter overflows (how many times it goes from 0 to MAX per second).
 
-ISR(TIMER0_COMPA_vect){
-//    counter += 1;
+//macro for running an atomic operation. Saves the global interrupt flag (whether interrupts are on or off), turns interrupts off, runs the atomic code, then rewrites interrupt flag.
+
+ISR(TIMER1_COMPA_vect){
       cycle_count++;
 }
 
 void setup() {
     Serial.begin(9600);
+    timer_set(1);
     timer_init();
-    timer_set(100);
 }
 
 void loop() {
-    Serial.println(cycle_count);
-//    Serial.println(TCNT0);
+  Serial.println(cycle_count);
 }
 
-void timer_init(){
-    TIMSK0 = B00000010;
-    // Toggle OC0A on match, CTC mode
-    TCCR0A = B01000010;
-    // Select clock with 1024 prescaler
-    TCCR0B = B00000101;
+void timer_init(){         
     // Reset timer counter
-    TCNT0 = B00000000;
+    timer_reset();  
+    //toggle compare output mode on
+    TCCR1A |= B11000000;
+    // Use CTC mode (bits 5 and 4 from left set to 0 1) and set prescaler to 8 (bits 3,2,and 1 from left set to 0 1 0)
+    TCCR1B |= B00001010;
+  // Enable interrupts; Toggle an interrupt on match with value of OCR1A
+    TIMSK1 |= B00000010;  
 }
 
 void timer_reset(){
-    // Reset timer counter
-    TCNT0 = B00000000;
+  //do this atomically so that things don't explode if an interrupt triggers while we are accessing TCNT1.
+    unsigned char sreg;
+    sreg=SREG;
+    cli();
+    TCNT1 = 0x0000; //16bit register
+    SREG = sreg;
 }
 
 void timer_set(uint16_t period){
-    OCR0A = (period*10/1.28);
-//    counter_max = period;
+    OCR1A =  (uint16_t)(CNTR_MAX*period)/CNTR_FREQ ;
 }
