@@ -6,17 +6,11 @@
  *  -Turn LED on or off.
  *  -Toggle LED state.
  */
-#include "gpio.h"
 #include "led.h"
-#include "Arduino.h"
-void led_init();
-void led_on();
-void led_off();
-void led_toggle();
 
 void led_init() {
     gpio_set_mode(LED,1);
-    led_off();
+    led_off(); // TODO: test if necessary. Setting to output may or may not write HIGH to the pin. pinMode() seems to do it, and we are warned in the spec.
 }
 
 void led_off() {

@@ -7,7 +7,7 @@
  *  -Toggle pin mode.
  *  -Digital write.
  */
-#define togglePin 1<<5
+
 #include "gpio.h"
 
 //Sets a digital pin to input or output. Input: A bitmask representing the pin on PORTB.

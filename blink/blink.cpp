@@ -7,6 +7,7 @@
  * -Initialize LED and timer.
  * -Set or change a period for blinking the LED. max period is 524ms, min period 8us. (Prescaler 64, 16-bit timer).
  */
+#include "blink.h"
 
 void blink_init() {
     led_init();
