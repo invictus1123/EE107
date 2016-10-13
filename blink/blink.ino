@@ -13,14 +13,14 @@
 
 void blink_init();
 void blink_set(uint16_t interval_ms);
-void blink_ms_timer_update();
+void blink_timer_ms_update();
 
 void setup() {
     blink_init();
     blink_set(1);
 }
 ISR(TIMER1_COMPA_vect) {
-    blink_ms_timer_update();
+    blink_timer_ms_update();
 }
 void loop() {
 }
