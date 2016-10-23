@@ -13,7 +13,7 @@
  void uart_hardware_init();
  inline void uart_hardware_tx_byte(uint8_t data);
  inline uint8_t uart_hardware_rx_byte();
- #define FOSC 1000000 //provides 0 error with 9600 baud
+ #define FOSC 8000000 //provides 0 error with 9600 baud
  #define BAUD_RATE 9600
  #define UBRR ( FOSC/(16*(BAUD_RATE)) )-1
 void setup() {
@@ -22,14 +22,9 @@ void setup() {
 }
 
 void loop() {
-  uart_hardware_tx_byte('a');
-  uint8_t ch = uart_hardware_rx_byte();
-  if(ch == 'a') {
-      digitalWrite(13,HIGH);
-  }
-  delay(100);
-  digitalWrite(13,LOW);
-  delay(1000);
+  uart_hardware_tx_byte('a'); //transmit the character 'a' to the serial monitor
+  uint8_t ch = uart_hardware_rx_byte(); //read a character (test: send 'a')
+  uart_hardware_tx_byte(ch); //transmit back the character read to compare
 }
 void uart_hardware_init() {
     UBRR0H = (uint8_t) (UBRR>>8); //write the 4 most significant bits of the baud rate to the high bit register
