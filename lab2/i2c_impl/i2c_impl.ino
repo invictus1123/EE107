@@ -87,7 +87,6 @@ uint8_t I2C_read(uint8_t reg_address) {
 }
 
 bool I2C_read_len(uint8_t reg_address, uint8_t *buf, uint8_t len) {
-    I2C_initiate_read(reg_address);
     if(!I2C_initiate_read(reg_address)) {
         handleError();
     }
