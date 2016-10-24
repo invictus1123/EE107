@@ -53,7 +53,7 @@ bool I2C_initiate_read(uint8_t reg_address) {
     return true;
 }
 
-uint8_t I2C_getByte() {
+uint8_t I2C_getByte(bool moreDataLeft) {
     uint8_t data = 0;
     TWCR = (1<<TWINT) | (1<<TWEN) | (1<<TWSTA); //transmit repeated start
     while( !(TWCR & (1<<TWINT)) ) {}
@@ -71,7 +71,9 @@ uint8_t I2C_getByte() {
         if((TWSR & 0xF8) != DATA_RECEIVED) {//if we got data and sent acknowledgement (status code 0x50), continue
         handleError();
     }
-    TWCR = (1<<TWINT) | (1<<TWEN) | (1<<TWSTO); //transmit stop condition
+    if(!moreDataLeft) {
+        TWCR = (1<<TWINT) | (1<<TWEN) | (1<<TWSTO); //transmit stop condition
+    }
     return data;
 }
 
@@ -80,15 +82,19 @@ uint8_t I2C_read(uint8_t reg_address) {
     if(!I2C_initiate_read(reg_address)) {
         handleError();
     }
-    data = I2C_getByte();
+    data = I2C_getByte(false);
     return data;
 }
 
 bool I2C_read_len(uint8_t reg_address, uint8_t *buf, uint8_t len) {
     I2C_initiate_read(reg_address);
-    for(int i = 0; i < len; i++) {
-        buf[i] = I2C_getByte();
+    if(!I2C_initiate_read(reg_address)) {
+        handleError();
     }
+    for(int i = 0; i < len-1; i++) {
+        buf[i] = I2C_getByte(true);
+    }
+    buf[len-1] = I2C_getByte(false);
 }
 
 void handleError() {
