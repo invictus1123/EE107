@@ -1,38 +1,61 @@
 /* File: uart_software.ino
  * Written by Vinh Nguyen & LC Tao
  * EE107, Sachin Katti, Fall 2016
+ * This file implements the software serial port
+ * using the Arduino SoftwareSerial library.
+ * Functionality:
+ * -Set up the serial port at 
+ * 9600 baud, 8 data bits, one stop bit
+ * and no parity bit.
+ * -Transmit bytes of data over pins 8 (RX) and 9 (TX)
+ * Verification:
+ * TX: Sent data, and verified contents using DA
+ * RX: Sent data to software serial using hardware serial.
+ *     Lit LED when correct data was receieved.
  */
- 
-#include "timer.h"
-#include "gpio.h"
+#include <SoftwareSerial.h>
+
+/* Functions from uart_hardware.ino to test uart_software */
+extern void uart_hardware_init();
+extern inline void uart_hardware_tx_byte(uint8_t data);
+extern inline uint8_t uart_hardware_rx_byte();
+
+/* Functions from led.ino to test uart_software*/ 
+extern void led_init();
+extern void led_on();
+extern void led_off();
+extern void led_toggle();
 
 void uart_software_init();
 inline void uart_software_tx_byte(uint8_t data);
 inline uint8_t uart_software_rx_byte();
 
-volatile uint16_t tx_data_buf;
-volatile uint8_t tx_buf_counter;
+/* Declare SoftwareSerial instance*/
+SoftwareSerial soft_serial(8, 9); // RX, TX
 
-volatile uint16_t rx_data_buf;
-volatile uint8_t rx_buf_counter;
-
-/* Timer interrupt for uart tx and rx*/
-ISR(TIMER1_COMPA_vect) {
-    /* Uart tx */
-    if (tx_buf_counter != 0){
-        gpio_set_out(B00000001, tx_data_buf|B00000001); // Set GPIO to LSB of data buffer
-        tx_data_buf >> 1; // Shift out LSB of data buffer
-        tx_buf_counter -= 1; // Decrement counter
-    }
-
-    /* Uart rx */
-    if (rx_buf_counter != 0){
-        // TODO
-    }
-}
 
 void setup() {
+    uint8_t temp_rx;
     
+    uart_software_init();
+    uart_hardware_init();
+    led_init();
+    led_off();
+
+    delay(100);
+    uart_software_tx_byte(B10101010);
+
+    /* - Test software uart RX
+     * - Lights LED if byte is correctly received
+     * - Requires hardware UART TX pin to be connected to
+     *   pin 8 (software UART RX pin) by wire
+     */
+    uart_hardware_tx_byte(B10101010);
+    
+    temp_rx = uart_software_rx_byte();
+    if (temp_rx == B10101010){
+        led_on();
+    }
 }
 
 void loop() {
@@ -40,37 +63,18 @@ void loop() {
 }
 
 void uart_software_init(){
-    gpio_set_mode(B00000001, 1);
-    gpio_set_mode(B00000010, 0);
-    gpio_set_out(B00000001, 1);
-    timer_init();
-    timer_set(1000/9600);
+    soft_serial.begin(9600); // Begin software serial at 9600 baud
+                             // This defaults to 1 start, 1 stop, no parity bits
 }
 
 inline void uart_software_tx_byte(uint8_t data){
-    /* Check if counter is 0 (TODO: some error recovery?)*/
-    if (tx_buf_counter != 0) {
-        return; // Error, buffer is not empty, should never happen
-    }
-
-    /* Setup timer interrupt to perform uart tx*/
-    tx_data_buf = (1<<9) + (data<<1); // Load data with start and end bit to tx buffer
-    tx_buf_counter = 10; // Reset counter to 10 (10 bits to transfer)
-    timer_reset();       // Reset timer
-
-    /* Wait until tx_data is sent before ending function */
-    while (tx_buf_counter != 0);
+    soft_serial.write(data); // Write 1 byte to serial TX
+    soft_serial.flush();     // Flush the transmit buffer to ensure data 
+                             // is transmitted before exiting function
 }
 
 inline uint8_t uart_software_rx_byte(){
-    /* Setup timer interrupt to perform uart rx*/
-    rx_buf_counter = 10;
-    timer_reset();
-
-    /* Wait until rx data is receieved completely before reading */
-    while (rx_buf_counter != 0);
-
-    /* Output rx data*/
-    return (uint8_t) (rx_data_buf>>1);
+    while (!soft_serial.available()); // Wait until there is data to read
+    return soft_serial.read();        // Read 1 byte from serial RX and return
 }
 

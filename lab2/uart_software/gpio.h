@@ -1,3 +1,11 @@
+/*  File: gpio.h
+ *  Written by Vinh Nguyen & LC Tao
+ *  EE107, Sachin Katti, Fall 2016
+ *  This file interfaces the gpio library with led.ino.
+ *  Functionality:
+ *  -Toggle pin mode.
+ *  -Digital write.
+ */
 #ifndef GPIO_H
 #define GPIO_H
 #include "Arduino.h"

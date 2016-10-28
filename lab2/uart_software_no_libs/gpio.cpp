@@ -7,23 +7,7 @@
  *  -Toggle pin mode.
  *  -Digital write.
  */
-#define togglePin 1<<5
 #include "gpio.h"
-#include "Arduino.h" //for uint8_t type
- //Board: Arduino Pro Mini (digital pins 0~19)
-// commented out from gpio.ino
-//void setup() {
-//  gpio_set_mode(togglePin,1);
-//}
-//
-//void loop() {
-//  gpio_set_out(togglePin,1);
-//  gpio_set_out(togglePin,0);
-//  //For comparison
-//  //digitalWrite(togglePin,HIGH);
-//  //digitalWrite(togglePin,LOW);
-//}
-
 //Sets a digital pin to input or output. Input: A bitmask representing the pin on PORTB.
 void gpio_set_mode(uint8_t pin, uint8_t out_or_in) { //pinMode()
       if(out_or_in) {
@@ -44,3 +28,8 @@ void gpio_set_out(uint8_t pin, uint8_t on_or_off) { //digitalWrite()
 void gpio_toggle_out(uint8_t pin) {
     PORTB ^= pin;
 }
+
+uint8_t gpio_read(uint8_t pin_num) {
+    return (PORTB>>(pin_num - 1)) & B1;
+}
+
