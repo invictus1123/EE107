@@ -46,6 +46,7 @@ inline void uart_hardware_tx_byte(uint8_t data) {
     while( !(UCSR0A & (1<<UDRE0)) ); //if the expression is true, UDRE0 is 0, which means the transmission buffer is not empty    
     //wait until UDRE0 becomes 1 (transmission buffer becomes empty)
     UDR0 = data; //load the data into the transmission buffer to be transmitted
+    while( !(UCSR0A & (1<<UDRE0)) ); //wait for the byte to be transmitted before returning
 }
 
 inline uint8_t uart_hardware_rx_byte() {
