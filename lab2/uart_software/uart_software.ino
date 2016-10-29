@@ -33,33 +33,29 @@ inline uint8_t uart_software_rx_byte();
 /* Declare SoftwareSerial instance*/
 SoftwareSerial soft_serial(8, 9); // RX, TX
 
-
-void setup() {
-    uint8_t temp_rx;
-    
+void setup() {    
     uart_software_init();
     uart_hardware_init();
     led_init();
     led_off();
+}
 
-    delay(100);
-    uart_software_tx_byte(B10101010);
+void loop() {
+    uint8_t temp_rx;
+  
+    /*Test software uart TX by reading output bits on DA*/
+//    uart_software_tx_byte(B00101011);
 
-    /* - Test software uart RX
+     /* - Test software uart RX
      * - Lights LED if byte is correctly received
      * - Requires hardware UART TX pin to be connected to
      *   pin 8 (software UART RX pin) by wire
      */
-    uart_hardware_tx_byte(B10101010);
-    
-    temp_rx = uart_software_rx_byte();
-    if (temp_rx == B10101010){
-        led_on();
-    }
-}
-
-void loop() {
-    
+//    uart_hardware_tx_byte(B10101010);
+//    temp_rx = uart_software_rx_byte();
+//    if (temp_rx == B10101010){
+//        led_on();
+//    }
 }
 
 void uart_software_init(){
