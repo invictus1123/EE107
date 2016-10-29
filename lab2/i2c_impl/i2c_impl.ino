@@ -33,12 +33,16 @@ void setup() {
 }
 
 void loop() {
-    uint8_t chipID = I2C_read(0x00); //read the BNO055 chip ID register
-    Serial.println("Reading BNO055 chip ID:");
-    Serial.println("The default value:");
-    Serial.println(0xA0,HEX);
-    Serial.println("The value we read: ");
-    Serial.println(chipID,HEX);
+  uint8_t buf[6];
+    I2C_read_len(0x00,buf,6); //read the BNO055 chip ID register
+//    Serial.println("Reading BNO055 chip ID:");
+//    Serial.println("The default value:");
+//    Serial.println(0xA0,HEX);
+//    Serial.println("The value we read: ");
+//    Serial.println(chipID,HEX);
+    for(int i = 0; i < 6; i++ ) {
+        Serial.println(buf[i]);
+    }
     delay(1000);
 }
 
@@ -154,13 +158,14 @@ uint8_t I2C_read(uint8_t reg_address) {
 }
 
 bool I2C_read_len(uint8_t reg_address, uint8_t *buf, uint8_t len) {
-    if(!I2C_initiate_read(reg_address)) {
-        Serial.println("Read encountered an error");
-    }
     for(int i = 0; i < len-1; i++) {
-        buf[i] = I2C_getByte(true);
+        if(!I2C_initiate_read(reg_address)) {
+        Serial.println("Read encountered an error");
+        }
+        buf[i] = I2C_getByte(false);
+        reg_address++;
     }
-    buf[len-1] = I2C_getByte(false);
+//    buf[len-1] = I2C_getByte(false);
 }
 
 void handleError(uint8_t error) {
