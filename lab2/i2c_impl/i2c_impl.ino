@@ -6,6 +6,11 @@
  * Functionality: 
  * -Read one or more bytes of data from a specified register on another device
  */
+ /*I2C_read_len() testing: The register 0x00 was chosen as the start of a 6 byte read. 
+ Since the BNO will continue to read down memory when multiple bytes are requested, we read the first 4 registers
+ to see if they matched the values of the first 4 registers (register IDs, which are fixed) in the BNO. These values should read 
+ 0xA0, 0xFB, 0x32, 0x0F, which is what the program outputs.
+ */
  #define SLAVE_ADDRESS 0x28 //default address of the BNO055
  #define READ_BIT B00000001 //write bit is 0
  #define SCL_RATE 
@@ -33,15 +38,10 @@ void setup() {
 }
 
 void loop() {
-  uint8_t buf[6];
-    I2C_read_len(0x00,buf,6); //read the BNO055 chip ID register
-//    Serial.println("Reading BNO055 chip ID:");
-//    Serial.println("The default value:");
-//    Serial.println(0xA0,HEX);
-//    Serial.println("The value we read: ");
-//    Serial.println(chipID,HEX);
-    for(int i = 0; i < 6; i++ ) {
-        Serial.println(buf[i]);
+  uint8_t buf[4];
+    I2C_read_len(0x00,buf,4); //read the BNO055 chip ID register
+    for(int i = 0; i < 4; i++ ) {
+        Serial.println(buf[i],HEX);
     }
     delay(1000);
 }
