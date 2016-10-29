@@ -6,7 +6,7 @@
  * Functionality:
  * -Read one or more bytes of data from a specified register on another device
  */
-
+#include "i2c.h"
 bool I2C_write(uint8_t reg, uint8_t data) {
         TWCR = (1<<TWINT) |(1<<TWSTA) | (1<<TWEN); //set TWINT to clear interrupt, start condition, enable acknowledge bits, and enable I2C.
     while( !(TWCR & (1<<TWINT)) ) {}
@@ -128,14 +128,14 @@ bool I2C_read_len(uint8_t reg_address, uint8_t *buf, uint8_t len) {
     buf[len-1] = I2C_getByte(false);
 }
 
-void handleError(uint8_t error) {
-  switch(error) {
-//      case READ_NACK:     Serial.println("Did not get acknowledgement for read privilege");break;
-//      case DATA_RECEIVED: Serial.println("Did not successfully receive and acknowledge data");break;
-//      case WRITE_NACK:    Serial.println("Did not get acknowledgement for write privilege");break;
-//      case DATA_NOT_SENT: Serial.println("Did not successfully send data and get acknowledgement");break;
-//      case START:         Serial.println("Start condition not sent"); break;
-//      case R_START:       Serial.println("Repeated start condition not sent"); break;
+void handleError(uint8_t code) {
+  switch(code) {
+      case READ_NACK:     Serial.println("Did not get acknowledgement for read privilege");break;
+      case DATA_RECEIVED: Serial.println("Did not successfully receive and acknowledge data");break;
+      case WRITE_NACK:    Serial.println("Did not get acknowledgement for write privilege");break;
+      case DATA_NOT_SENT: Serial.println("Did not successfully send data and get acknowledgement");break;
+      case START:         Serial.println("Start condition not sent"); break;
+      case R_START:       Serial.println("Repeated start condition not sent"); break;
       default:break;
   }
 }

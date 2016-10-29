@@ -8,6 +8,8 @@
  * 9600 baud, 8 data bits, one stop bit
  * and no parity bit.
  * -Transmit bytes of data over the bus
+ * (Extended from uart_hardware.ino):
+ * -Transmit a string over the bus.
  */
 #include "uart_hardware.h"
 //Test code to be put into a sketch

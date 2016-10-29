@@ -24,7 +24,9 @@ bool I2C_read_len(uint8_t reg_address, uint8_t* buf, uint8_t len);
 
 bool I2C_initiate_read(uint8_t reg_address);
 
+bool I2C_write(uint8_t reg, uint8_t data);
+
 uint8_t I2C_getByte(bool moreDataLeft);
 
-void handleError();
+void handleError(uint8_t code);
 #endif // I2C_H

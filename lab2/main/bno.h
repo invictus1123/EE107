@@ -70,7 +70,7 @@ static const uint8_t  POWER_MODE_NORMAL                                       = 
 static const uint8_t  POWER_MODE_LOWPOWER                                     = 0X01;
 static const uint8_t  POWER_MODE_SUSPEND                                      = 0X02;
 
-bool bno_init(float* buf);
+bool bno_init();
 void bno_gyro(float* buf);
 void bno_accelerometer(float* buf);
 void bno_magnetometer(float* buf);

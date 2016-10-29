@@ -1,3 +1,6 @@
+#include "bno.h"
+#include "i2c.h"
+
 bool bno_init() {
     /* Make sure we have the right device */
     uint8_t id = I2C_read(BNO055_CHIP_ID_ADDR);
@@ -9,18 +12,16 @@ bool bno_init() {
        return false;  // still not? ok bail
      }
     }
-
     /* Switch to config mode (just in case since this is the default) */
     I2C_write(BNO055_OPR_MODE_ADDR,OPERATION_MODE_CONFIG);
-
     /* Reset */
     I2C_write(BNO055_SYS_TRIGGER_ADDR, 0x20);
-    while (I2C_read(BNO055_CHIP_ID_ADDR) != BNO055_CHIP_ID)
+    delay(250);
+    while ((id = I2C_read(BNO055_CHIP_ID_ADDR)) != BNO055_CHIP_ID)
     {
-     delay(10);
+    delay(1000); // hold on for boot
     }
     delay(50);
-
     /* Set to normal power mode */
     I2C_write(BNO055_PWR_MODE_ADDR, POWER_MODE_NORMAL);
     delay(10);
@@ -42,9 +43,9 @@ void bno_gyro(float* buf) {
      int16_t y = 0;
      int16_t z = 0;
      I2C_read_len(BNO055_GYRO_DATA_X_LSB_ADDR,buffer8,6);
-     x = ((int16_t)buffer[0]) | (((int16_t)buffer[1]) << 8);
-     y = ((int16_t)buffer[2]) | (((int16_t)buffer[3]) << 8);
-     z = ((int16_t)buffer[4]) | (((int16_t)buffer[5]) << 8);
+     x = ((int16_t)buf[0]) | (((int16_t)buf[1]) << 8);
+     y = ((int16_t)buf[2]) | (((int16_t)buf[3]) << 8);
+     z = ((int16_t)buf[4]) | (((int16_t)buf[5]) << 8);
      buf[0] = ((double)x)/900.0;
      buf[1] = ((double)y)/900.0;
      buf[2] = ((double)z)/900.0;
@@ -55,9 +56,9 @@ void bno_accelerometer(float* buf){
      int16_t y = 0;
      int16_t z = 0;
      I2C_read_len(BNO055_ACCEL_DATA_X_LSB_ADDR,buffer8,6);
-     x = ((int16_t)buffer[0]) | (((int16_t)buffer[1]) << 8);
-     y = ((int16_t)buffer[2]) | (((int16_t)buffer[3]) << 8);
-     z = ((int16_t)buffer[4]) | (((int16_t)buffer[5]) << 8);
+     x = ((int16_t)buf[0]) | (((int16_t)buf[1]) << 8);
+     y = ((int16_t)buf[2]) | (((int16_t)buf[3]) << 8);
+     z = ((int16_t)buf[4]) | (((int16_t)buf[5]) << 8);
      buf[0] = ((double)x)/100.0;
      buf[1] = ((double)y)/100.0;
      buf[2] = ((double)z)/100.0;
@@ -68,15 +69,15 @@ void bno_magnetometer(float* buf){
      int16_t y = 0;
      int16_t z = 0;
      I2C_read_len(BNO055_MAG_DATA_X_LSB_ADDR,buffer8,6);
-     x = ((int16_t)buffer[0]) | (((int16_t)buffer[1]) << 8);
-     y = ((int16_t)buffer[2]) | (((int16_t)buffer[3]) << 8);
-     z = ((int16_t)buffer[4]) | (((int16_t)buffer[5]) << 8);
+     x = ((int16_t)buf[0]) | (((int16_t)buf[1]) << 8);
+     y = ((int16_t)buf[2]) | (((int16_t)buf[3]) << 8);
+     z = ((int16_t)buf[4]) | (((int16_t)buf[5]) << 8);
      buf[0] = ((double)x)/16.0;
      buf[1] = ((double)y)/16.0;
      buf[2] = ((double)z)/16.0;
 }
 void bno_orientation(float* buf){
-    uint8_t* buffer8[8] = {0};
+    uint8_t buffer8[8];
     I2C_read_len(BNO055_QUATERNION_DATA_W_LSB_ADDR, buffer8, 8);
     uint16_t w = (((uint16_t)buf[1]) << 8) | ((uint16_t)buf[0]);
     uint16_t x = (((uint16_t)buf[3]) << 8) | ((uint16_t)buf[2]);
