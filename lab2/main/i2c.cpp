@@ -96,7 +96,7 @@ uint8_t I2C_getByte(bool moreDataLeft) {
             }
         }   
     }
-    delayMicroseconds(450); // The bus seems to break if TWDR is read too quickly: stretch the clock/wait so that the register can be loaded (350us seems to be enough to prevent crashes).
+    delayMicroseconds(600); // The bus seems to break if TWDR is read too quickly: stretch the clock/wait so that the register can be loaded (350us seems to be enough to prevent crashes).
     data = TWDR;
     if(!moreDataLeft) {
         TWCR = (1<<TWINT) | (1<<TWEN) | (1<<TWSTO); //transmit stop condition
