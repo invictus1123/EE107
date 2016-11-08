@@ -1,6 +1,18 @@
 #ifndef UART_HARDWARE_H
 #define UART_HARDWARE_H
-
+/* File: uart_hardware.cpp
+ * Written by Vinh Nguyen & LC Tao
+ * EE107, Sachin Katti, Fall 2016
+ * This file implements the driver
+ * for the hardware serial port.
+ * Functionality:
+ * -Set up the Serial Port at
+ * 9600 baud, 8 data bits, one stop bit
+ * and no parity bit.
+ * -Transmit bytes of data over the bus
+ * (Extended from uart_hardware.ino):
+ * -Transmit a string over the bus.
+ */
 #include "Arduino.h"
 
 #define FOSC 16000000 //provides 0 error with 9600 baud

@@ -38,7 +38,7 @@ void setup() {
 }
 
 void loop() {
-  uint8_t buf[4];
+  uint8_t buf[7];
     I2C_read_len(0x00,buf,4); //read the BNO055 chip ID register
     for(int i = 0; i < 4; i++ ) {
         Serial.println(buf[i],HEX);
@@ -111,11 +111,6 @@ bool I2C_initiate_read(uint8_t reg_address) {
         TWCR = 0;
         return false;
     }
-    return true;
-}
-
-uint8_t I2C_getByte(bool moreDataLeft) {
-    uint8_t data = 0;
     TWCR = (1<<TWINT) | (1<<TWEN) | (1<<TWSTA); //transmit repeated start
     while( !(TWCR & (1<<TWINT)) ) {}
     if(((TWSR & 0xF8)!= R_START) && ((TWSR & 0xF8) !=START)){ //check we sent a repeated start
@@ -127,8 +122,13 @@ uint8_t I2C_getByte(bool moreDataLeft) {
     if((TWSR & 0xF8) != READ_ACK) { //if we got acknowedgement to read(status code 0x40), continue
         handleError(READ_NACK);
     }
+    return true;
+}
+
+uint8_t I2C_getByte(bool moreDataLeft) {
+    uint8_t data = 0;
     if(moreDataLeft) {
-        TWCR = (1<<TWINT) | (1<<TWEN);
+        TWCR = (1<<TWINT) | (1<<TWEN) | (1<<TWEA);
         while( !(TWCR & (1<<TWINT)) ) {} //wait for acknowledgement
         if((TWSR & 0xF8) != DATA_RECEIVED) {//if we got data and sent acknowledgement (status code 0x50), continue
             handleError(DATA_RECEIVED);
@@ -137,9 +137,12 @@ uint8_t I2C_getByte(bool moreDataLeft) {
         TWCR = (1<<TWINT) | (1<<TWEN);
         while( !(TWCR & (1<<TWINT)) ) {} //wait for acknowledgement send 
         if((TWSR & 0xF8) != LAST_RECEIVED) {//if we got data and sent acknowledgement (status code 0x50), continue
-            handleError(LAST_RECEIVED);
+            if((TWSR & 0xF8)==0x00) {
+                Serial.println("Unexpected Stop or Start killed the bus!");
+            }
         }   
     }
+    delayMicroseconds(300); // The bus seems to break if TWDR is read too quickly: stretch the clock/wait so that the register can be loaded (250us seems to be enough to prevent crashes).
     data = TWDR;
     if(!moreDataLeft) {
         TWCR = (1<<TWINT) | (1<<TWEN) | (1<<TWSTO); //transmit stop condition
@@ -158,14 +161,13 @@ uint8_t I2C_read(uint8_t reg_address) {
 }
 
 bool I2C_read_len(uint8_t reg_address, uint8_t *buf, uint8_t len) {
-    for(int i = 0; i < len-1; i++) {
-        if(!I2C_initiate_read(reg_address)) {
+    if(!I2C_initiate_read(reg_address)) {
         Serial.println("Read encountered an error");
         }
-        buf[i] = I2C_getByte(false);
-        reg_address++;
+    for(int i = 0; i < len-1; i++) {
+        buf[i] = I2C_getByte(true);
     }
-//    buf[len-1] = I2C_getByte(false);
+    buf[len-1] = I2C_getByte(false);
 }
 
 void handleError(uint8_t error) {
@@ -179,3 +181,4 @@ void handleError(uint8_t error) {
       default:break;
   }
 }
+
