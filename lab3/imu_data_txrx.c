@@ -32,7 +32,7 @@ int imu_data_txrx(int usb_id, int *store_val, int *cnt, uint8_t *buf){
     } else if (read_buf == START_BYTE){
         *store_val = 1;
     } else if (*store_val == 1){
-        buf[*cnt] = (uint8_t) *read_buf;
+        buf[*cnt] = (uint8_t) read_buf;
         *cnt = *cnt + 1;
     }
 
