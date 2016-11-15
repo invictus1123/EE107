@@ -6,35 +6,35 @@
 int imu_data_txrx(int usb_id, int *store_val, int *cnt, uint8_t *buf){
     int rx_count;
     int timestamp;
-	int8_t read_buf;
+    int8_t read_buf;
 
     rx_count = read(usb_id, &read_buf, 1); // Read 1 byte (block until byte is read, or timeout occurs)
 	
-	// Read error
+    // Read error
     if (rx_count != 1){
-		printf("Read error\n");
-		*cnt = 0;
-		return 0;
+        printf("Read error\n");
+        *cnt = 0;
+        return 0;
     }
-	// Stop byte read
-	if (read_buf == STOP_BYTE){
-		// Append timestamp to buf
-		timestamp = (int) time(NULL);
-		buf[*cnt + 1] = (timestamp >> 24) & 0xFF;
+    // Stop byte read
+    if (read_buf == STOP_BYTE){
+        // Append timestamp to buf
+        timestamp = (int) time(NULL);
+        buf[*cnt + 1] = (timestamp >> 24) & 0xFF;
         buf[*cnt + 2] = (timestamp >> 16) & 0xFF;
         buf[*cnt + 3] = (timestamp >> 8) & 0xFF;
         buf[*cnt + 4] = timestamp & 0xFF;
-		// Reset store_val and cnt
-		*store_val = 0;
-		*cnt = 0;
-		return 1; //Complete IMU data (including timestamp) has been read
-	// Start byte read
-	} else if (read_buf == START_BYTE){
-		*store_val = 1;
-	} else if (*store_val == 1){
-		buf[*cnt] = (uint8_t) *read_buf;
-		*cnt = *cnt + 1;
-	}
-	
-	return 0;
+        // Reset store_val and cnt
+        *store_val = 0;
+        *cnt = 0;
+        return 1; //Complete IMU data (including timestamp) has been read
+    // Start byte read
+    } else if (read_buf == START_BYTE){
+        *store_val = 1;
+    } else if (*store_val == 1){
+        buf[*cnt] = (uint8_t) *read_buf;
+        *cnt = *cnt + 1;
+    }
+
+    return 0;
 }
