@@ -52,10 +52,5 @@ void process_imu(char *buff, Imu *imu_data) {
     float quatz = decodeData(buff[12],buff[3],false);
     imu_data->q_k = quatz;
     uint32_t timestamp = ((uint32_t)buff[14]<<24) + ((uint32_t)buff[15]<<16) + ((uint32_t)buff[16]<<8) + (buff[17]);
-    imu_data->t_stamp = timestamp;
-    printf("accelerometer (x,y,z) = (%f,%f,%f)\n", \
-        imu_data->accel_x, imu_data->accel_y, imu_data->accel_z);
-    printf("quaternion (q1,q2,q3,q4) = (%f,%f,%f,%f)\n", \
-        imu_data->q_1, imu_data->q_i, imu_data->q_j, imu_data->q_k);
-    printf("timestamp = %d\n", imu_data->t_stamp);    
+    imu_data->t_stamp = timestamp;   
 }
