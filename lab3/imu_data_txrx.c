@@ -12,8 +12,12 @@ int imu_data_txrx(int usb_id, int *store_val, int *cnt, uint8_t *buf){
 	
     // Read error
     if (rx_count != 1){
-        printf("Read error\n");
-        *cnt = 0;
+        if (rx_count == 0){
+            printf("Timeout, no data read\n");
+        } else {
+            printf("Read error\n");
+        }
+        //*cnt = 0; // Not sure if cnt should be reset
         return 0;
     }
     // Stop byte read
