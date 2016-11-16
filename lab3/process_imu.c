@@ -34,23 +34,24 @@ float decodeData(char msByte, char lsByte, bool acc_or_quat) {
 }
 void process_imu(char *buff, Imu *imu_data) {
     int i;
+    char buf = buff + PAYLOAD_OFFSET; // Skip headers to grab data bytes
     for(i = 0; i < BYTES_PER_ENTRY*ENTRIES_PER_PACKET+TSTAMP_SIZE; i++) {
-        imu_data->raw_data[i] = buff[i];
+        imu_data->raw_data[i] = buf[i];
     }
-    float ax = decodeData(buff[0],buff[1],true);
+    float ax = decodeData(buf[0],buf[1],true);
     imu_data->accel_x = ax;
-    float ay = decodeData(buff[2],buff[3],true);
+    float ay = decodeData(buf[2],buf[3],true);
     imu_data->accel_y = ay;
-    float az = decodeData(buff[4],buff[5],true);
+    float az = decodeData(buf[4],buf[5],true);
     imu_data->accel_z = az;
-    float quatw = decodeData(buff[6],buff[7],false);
+    float quatw = decodeData(buf[6],buf[7],false);
     imu_data->q_1 = quatw;
-    float quatx = decodeData(buff[8],buff[9],false);
+    float quatx = decodeData(buf[8],buf[9],false);
     imu_data->q_i = quatx;
-    float quaty = decodeData(buff[10],buff[11],false);
+    float quaty = decodeData(buf[10],buf[11],false);
     imu_data->q_j = quaty;
-    float quatz = decodeData(buff[12],buff[3],false);
+    float quatz = decodeData(buf[12],buf[3],false);
     imu_data->q_k = quatz;
-    uint32_t timestamp = ((uint32_t)buff[14]<<24) + ((uint32_t)buff[15]<<16) + ((uint32_t)buff[16]<<8) + (buff[17]);
+    uint32_t timestamp = ((uint32_t)buf[14]<<24) + ((uint32_t)buf[15]<<16) + ((uint32_t)buf[16]<<8) + (buf[17]);
     imu_data->t_stamp = timestamp;   
 }
