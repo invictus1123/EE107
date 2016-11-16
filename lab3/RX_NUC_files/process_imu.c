@@ -34,7 +34,7 @@ float decodeData(char msByte, char lsByte, bool acc_or_quat) {
 }
 void process_imu(char *buff, Imu *imu_data) {
     int i;
-    char buf = buff + PAYLOAD_OFFSET; // Skip headers to grab data bytes
+    char *buf = buff + PAYLOAD_OFFSET; // Skip headers to grab data bytes
     for(i = 0; i < BYTES_PER_ENTRY*ENTRIES_PER_PACKET+TSTAMP_SIZE; i++) {
         imu_data->raw_data[i] = buf[i];
     }
