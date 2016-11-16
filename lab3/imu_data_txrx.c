@@ -24,10 +24,10 @@ int imu_data_txrx(int usb_id, int *store_val, int *cnt, uint8_t *buf){
     if (read_buf == STOP_BYTE){
         // Append timestamp to buf
         timestamp = (int) time(NULL);
-        buf[*cnt + 1] = (timestamp >> 24) & 0xFF;
-        buf[*cnt + 2] = (timestamp >> 16) & 0xFF;
-        buf[*cnt + 3] = (timestamp >> 8) & 0xFF;
-        buf[*cnt + 4] = timestamp & 0xFF;
+        buf[*cnt] = (timestamp >> 24) & 0xFF;
+        buf[*cnt + 1] = (timestamp >> 16) & 0xFF;
+        buf[*cnt + 2] = (timestamp >> 8) & 0xFF;
+        buf[*cnt + 3] = timestamp & 0xFF;
         // Reset store_val and cnt
         *store_val = 0;
         *cnt = 0;
