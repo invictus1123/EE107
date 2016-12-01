@@ -1,0 +1,5 @@
+1) Get current location by combining IMU data
+2) Calculate current direction subtracting initial location from current location
+3) Calculate desired direction by subtracting current location from target location
+4) Calculate turn angle
+5) 
