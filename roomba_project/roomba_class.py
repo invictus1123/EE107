@@ -28,12 +28,14 @@ class Roomba_Position(object):
 			self.current_heading_x = current_x - self.last_x;
 			self.current_heading_y = current_y - self.last_y;
 			current_norm = math.hypot(self.current_heading_x, self.current_heading_y);
-			self.current_heading_x /= target_norm;
-			self.current_heading_y /= target_norm;
+			self.current_heading_x /= current_norm;
+			self.current_heading_y /= current_norm;
 
 			self.last_x = current_x;
 			self.last_y = current_y;
-	
+	def set_target(self, waypoint_x, waypoint_y):
+		self.target_x = waypoint_x;
+		self.target_y = waypoint_y;
 	def get_angle(self):
 		return math.atan2(self.target_heading_x, self.target_heading_y) \
 		- math.atan2(self.current_heading_x, self.current_heading_y);
