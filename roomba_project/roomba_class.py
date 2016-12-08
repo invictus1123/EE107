@@ -28,8 +28,8 @@ class Roomba_Position(object):
 			self.current_heading_x = current_x - self.last_x;
 			self.current_heading_y = current_y - self.last_y;
 			current_norm = math.hypot(self.current_heading_x, self.current_heading_y);
-			self.current_heading_x /= target_norm;
-			self.current_heading_y /= target_norm;
+			self.current_heading_x /= current_norm;
+			self.current_heading_y /= current_norm;
 
 			self.last_x = current_x;
 			self.last_y = current_y;
