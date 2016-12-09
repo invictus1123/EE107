@@ -29,6 +29,10 @@ class Roomba_Position(object):
 			self.target_heading_y = self.target_y/target_norm;
 			self.current_heading_x = 0;
 			self.current_heading_y = 1;
+			
+			#initialize the last_x and last_y poistions
+			self.last_x = current_x;
+			self.last_y = current_y;
 		else:
 			self.target_heading_x = self.target_x - current_x;
 			self.target_heading_y = self.target_y - current_y;
