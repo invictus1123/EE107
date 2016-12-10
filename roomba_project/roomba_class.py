@@ -1,7 +1,7 @@
 import math
 
 class Roomba_Position(object):
-	def __init__(self, target_x, target_y):
+	def __init__(self, target_x, target_y, q0, q1, q2, q3):
 		self.target_x = target_x;
 		self.target_y = target_y;
 		self.last_x = None;
@@ -10,6 +10,7 @@ class Roomba_Position(object):
 		self.target_heading_y = None;
 		self.current_heading_x = None;
 		self.current_heading_y = None;
+		self.init_yaw = math.atan2(2.0*(q0*q3 + q1*q2), 1.0 - 2.0*(q2*q2 + q3*q3);
 		
 	def get_movement_instructions(self, x_estimate,y_estimate):
 		self.set_headings(x_estimate,y_estimate);
@@ -48,6 +49,19 @@ class Roomba_Position(object):
 
 			self.last_x = current_x;
 			self.last_y = current_y;
+
+	# Alternative to set_headings using quaternion values
+	def set_headings_quat(self, current_x, current_y, q0, q1, q2, q3):
+			self.target_heading_x = self.target_x - current_x;
+			self.target_heading_y = self.target_y - current_y;
+			target_norm = math.hypot(self.target_heading_x, self.target_heading_y);
+			self.target_heading_x /= target_norm;
+			self.target_heading_y /= target_norm;
+
+			abs_yaw = math.atan2(2.0*(q0*q3 + q1*q2), 1.0 - 2.0*(q2*q2 + q3*q3);
+			rel_yaw = abs_yaw - self.init_yaw;
+			self.current_heading_x = math.cos(rel_yaw);
+			self.current_heading_y = math.sin(rel_yaw);
 			
 	def set_target(self, waypoint_x, waypoint_y):
 		self.target_x = waypoint_x;

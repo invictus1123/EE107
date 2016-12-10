@@ -1,14 +1,17 @@
 import sys
 import struct
 import traceback
+import time
 import socket
+
+import math
 
 # Constants, should not be changed
 SIZEOF_INT = 4;
 SIZEOF_FLOAT = 4;
 lengthOfData = 12;
 
-portno = 23000; # 6000 if getting real data, 23000 for emulator data
+portno = 6000; # 6000 if getting real data, 23000 for emulator data
 laptopHostname = socket.gethostbyname(socket.gethostname())
 serverHostname = 'ee107server.stanford.edu';
 macNUC = 'C03FD560BEEF'; # 12 characters
@@ -59,6 +62,8 @@ while (1):
 		print "Position (%f, %f, %f)" % (newData[2],newData[3],newData[4]);
 		print "Accelerometer (%f, %f, %f)" % (newData[5],newData[6],newData[7]);
 		print "Orientation quat (%f, %f, %f, %f)" % (newData[8],newData[9],newData[10],newData[11]);
+		(q0, q1, q2, q3) = (newData[8],newData[9],newData[10],newData[11]);
+		print "Yaw from quat: %f" % math.atan2(2.0*(q0*q3 + q1*q2), 1.0 - 2.0*(q2*q2 + q3*q3));
 
 		# New stuff here
 
