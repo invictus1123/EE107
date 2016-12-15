@@ -7,8 +7,11 @@ def roomba_forward(bot):
 	return 0;
 
 def roomba_turn(angle,bot):
-	print "Roomba turning %f radians clockwise" % angle;
-	bot.turn_clockwise(TURN_V);
+	print "Roomba turning %f radians CCW" % angle;
+	if (angle <= 0):
+		bot.turn_clockwise(TURN_V);
+	else:
+		bot.turn_counter_clockwise(TURN_V);
 	return 0;
 
 def roomba_stop(bot):

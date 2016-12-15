@@ -14,7 +14,7 @@ bot = create2api.Create2();
 bot.start();
 bot.safe();
 
-portno = 23000; # 6000 if getting real data, 23000 for emulator data
+portno = 6000; # 6000 if getting real data, 23000 for emulator data
 laptopHostname = socket.gethostbyname(socket.gethostname())
 serverHostname = 'ee107server.stanford.edu';
 macNUC = 'C03FD560BEEF'; # 12 characters
@@ -54,12 +54,11 @@ newData = "";
 
 # Intialize waypoints and Roomba objects
 action_count = MAX_ACTION_COUNT;	# Counts iterations until next Roomba command
-waypoints = [[100,0], [50,0]];		# Set waypoints (mm) here
+waypoints = [[-40,70]];		# Set waypoints (mm) here
 current_waypoint = 0;				# Waypoint counter
 
 #initialize with the first waypoints as the target
 roomba_pos = roomba_class.Roomba_Position(waypoints[0][0], waypoints[0][1]);
-
 while (current_waypoint != DONE_FLAG):
 	try:
 		print "Listening at port %d..." % portToReadData;

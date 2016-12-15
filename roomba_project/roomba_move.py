@@ -29,11 +29,11 @@ def move_loop(roomba, roomba_pos, waypoints, current_waypoint, x_estimate, y_est
 			return current_waypoint + 1;
 	else:
 		# If waypoint not reached, give movement commands to Roomba
-		if(math.fabs(angle)>ANGLE_THRESHOLD):
-		# Turn Roomba according to angle
-			move_commands.roomba_turn(angle,roomba);
-		else:
-		# Move Roomba forward (doesn't stop until next move_loop iteration)
-			move_commands.roomba_forward(roomba);
-
+		# if(math.fabs(angle)>ANGLE_THRESHOLD):
+		# # Turn Roomba according to angle
+		# 	#move_commands.roomba_turn(angle,roomba);
+		# else:
+		# # Move Roomba forward (doesn't stop until next move_loop iteration)
+		# 	#move_commands.roomba_forward(roomba);
+		# 	sleep(.01);
 		return current_waypoint;

@@ -107,7 +107,7 @@ class SerialCommandInterface(object):
     """
 
     def __init__(self):
-        com = '/dev/ttyUSB0'  #This should not be hard coded...
+        com = '/dev/tty.usbserial-DA01NWVT'  #This should not be hard coded...
         baud = 115200
         
         self.ser = serial.Serial()
