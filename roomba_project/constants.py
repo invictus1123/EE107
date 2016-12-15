@@ -1,0 +1,6 @@
+SIZEOF_INT = 4;
+SIZEOF_FLOAT = 4;
+lengthOfData = 12;
+
+THRESHOLD = 5;
+DONE_FLAG = 999;
