@@ -25,7 +25,7 @@ def move_loop(roomba, roomba_pos, waypoints, current_waypoint, x_estimate, y_est
 			# Stop Roomba, play a sound (maybe?)
 			move_commands.roomba_stop(roomba);
 
-			roomba.set_target(waypoints[current_waypoint + 1][0],waypoints[current_waypoint + 1][1]);
+			roomba_pos.set_target(waypoints[current_waypoint + 1][0],waypoints[current_waypoint + 1][1]);
 			return current_waypoint + 1;
 	else:
 		# If waypoint not reached, give movement commands to Roomba
