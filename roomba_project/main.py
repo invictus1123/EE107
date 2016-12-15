@@ -48,9 +48,12 @@ except Exception, e:
 newData = "";
 
 # Intialize waypoints and Roomba objects
-waypoints = [[100,0], [50,0]];
-current_waypoint = 0;
-roomba_pos = roomba_class.Roomba_Position(waypoints[0][0], waypoints[0][1]); #initialize with the first waypoints as the target
+action_count = MAX_ACTION_COUNT;	# Counts iterations until next Roomba command
+waypoints = [[100,0], [50,0]];		# Set waypoints (mm) here
+current_waypoint = 0;				# Waypoint counter
+
+#initialize with the first waypoints as the target
+roomba_pos = roomba_class.Roomba_Position(waypoints[0][0], waypoints[0][1]);
 
 while (current_waypoint != DONE_FLAG):
 	try:
@@ -59,7 +62,7 @@ while (current_waypoint != DONE_FLAG):
 		rcvStr = connSock.recv(lengthOfData*SIZEOF_FLOAT);
 		newData = struct.unpack("@" + str(lengthOfData) + "f", rcvStr);
 
-		x_estimate, y_estimate = newData[2], newData[3]; # TODO
+		x_estimate, y_estimate = newData[2], newData[3];
 		(q0, q1, q2, q3) = (newData[8],newData[9],newData[10],newData[11]);
 
 		print "Data received from port %d" % portToReadData;
@@ -69,11 +72,15 @@ while (current_waypoint != DONE_FLAG):
 		print "Orientation quat (%f, %f, %f, %f)" % (newData[8],newData[9],newData[10],newData[11]);
 		print "Yaw from quat: %f" % math.atan2(2.0*(q0*q3 + q1*q2), 1.0 - 2.0*(q2*q2 + q3*q3));
 
-		current_waypoint = roomba_move.move_loop(roomba_pos, waypoints, current_waypoint,
-			x_estimate, y_estimate, q0, q1, q2, q3);
+		# Move only after a certain number of loop iterations
+		if(action_count == 0):
+			current_waypoint = roomba_move.move_loop(roomba_pos, waypoints, current_waypoint,
+				x_estimate, y_estimate, q0, q1, q2, q3);
+			action_count = MAX_ACTION_COUNT;
+		else:
+			action_count -= 1;
 
 		connSock.close();
-		time.sleep(.01);
 	except Exception, e:
 		traceback.print_exc();
 	 	sock.close();
