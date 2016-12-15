@@ -6,4 +6,5 @@ TURN_V = 100;
 DRIVE_V = 100;
 
 THRESHOLD = 5;			# Threshold for distance equality (mm)
+ANGLE_THRESHOLD = .0314;
 DONE_FLAG = -1;			# Flag to indicate last waypoint reached
