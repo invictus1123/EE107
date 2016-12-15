@@ -5,9 +5,14 @@ import time
 import socket
 import math
 
+import create2api
 import roomba_class
 import roomba_move
 from constants import *
+
+bot = create2api.Create2();
+bot.start();
+bot.safe();
 
 portno = 23000; # 6000 if getting real data, 23000 for emulator data
 laptopHostname = socket.gethostbyname(socket.gethostname())
@@ -74,7 +79,7 @@ while (current_waypoint != DONE_FLAG):
 
 		# Move only after a certain number of loop iterations
 		if(action_count == 0):
-			current_waypoint = roomba_move.move_loop(roomba_pos, waypoints, current_waypoint,
+			current_waypoint = roomba_move.move_loop(bot, roomba_pos, waypoints, current_waypoint,
 				x_estimate, y_estimate, q0, q1, q2, q3);
 			action_count = MAX_ACTION_COUNT;
 		else:
@@ -87,4 +92,3 @@ while (current_waypoint != DONE_FLAG):
 	 	exit(0);
 
 sock.close();
-
