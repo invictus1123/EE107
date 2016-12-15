@@ -4,7 +4,7 @@ import math
 import move_commands
 from constants import *
 
-def move_loop(roomba_pos, waypoints, current_waypoint, x_estimate, y_estimate, q0, q1, q2, q3):
+def move_loop(roomba, roomba_pos, waypoints, current_waypoint, x_estimate, y_estimate, q0, q1, q2, q3):
 	# Get angle to turn Roomba
 	angle = roomba_pos.get_movement_instructions(x_estimate, y_estimate, q0, q1, q2, q3);
 
@@ -15,14 +15,15 @@ def move_loop(roomba_pos, waypoints, current_waypoint, x_estimate, y_estimate, q
 			print ("Final Destination Reached");
 
 			# Stop Roomba, play a sound (maybe?)
-			move_commands.roomba_stop();
+			move_commands.roomba_stop(roomba);
+			move_commands.roomba_sound(roomba);
 
 			return DONE_FLAG;
 		else:
 			print ("Destination %d Reached" % (current_waypoint + 1));
 
 			# Stop Roomba, play a sound (maybe?)
-			move_commands.roomba_stop();
+			move_commands.roomba_stop(roomba);
 
 			roomba.set_target(waypoints[current_waypoint + 1][0],waypoints[current_waypoint + 1][1]);
 			return current_waypoint + 1;
@@ -30,9 +31,9 @@ def move_loop(roomba_pos, waypoints, current_waypoint, x_estimate, y_estimate, q
 		# If waypoint not reached, give movement commands to Roomba
 
 		# Turn Roomba according to angle
-		move_commands.roomba_turn(angle);
+		move_commands.roomba_turn(angle,roomba);
 
 		# Move Roomba forward (doesn't stop until next move_loop iteration)
-		move_commands.roomba_forward();
+		move_commands.roomba_forward(roomba);
 
 		return current_waypoint;
