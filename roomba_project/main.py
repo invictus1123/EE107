@@ -76,15 +76,9 @@ while (current_waypoint != DONE_FLAG):
 		print "Accelerometer (%f, %f, %f)" % (newData[5],newData[6],newData[7]);
 		print "Orientation quat (%f, %f, %f, %f)" % (newData[8],newData[9],newData[10],newData[11]);
 		print "Yaw from quat: %f" % math.atan2(2.0*(q0*q3 + q1*q2), 1.0 - 2.0*(q2*q2 + q3*q3));
-
-		# Move only after a certain number of loop iterations
-		if(action_count == 0):
-			current_waypoint = roomba_move.move_loop(bot, roomba_pos, waypoints, current_waypoint,
+		
+		current_waypoint = roomba_move.move_loop(bot, roomba_pos, waypoints, current_waypoint,
 				x_estimate, y_estimate, q0, q1, q2, q3);
-			action_count = MAX_ACTION_COUNT;
-		else:
-			action_count -= 1;
-
 		connSock.close();
 	except Exception, e:
 		traceback.print_exc();
