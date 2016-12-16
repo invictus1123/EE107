@@ -10,7 +10,12 @@ import roomba_class
 import roomba_move
 from constants import *
 
-bot = create2api.Create2();
+if (len(sys.argv) != 2):
+    print "Usage: python main_real.py [serial_port_fd]";
+    exit(0);
+
+# Setup API for Roomba communication
+bot = create2api.Create2(sys.argv[1]);
 bot.start();
 bot.safe();
 
@@ -52,13 +57,13 @@ except Exception, e:
 
 newData = "";
 
-# Intialize waypoints and Roomba objects
-#action_count = MAX_ACTION_COUNT;	# Counts iterations until next Roomba command
+# Intialize waypoints
 waypoints = [[0,200], [150, 200], [150,0], [0,0]];		# Set waypoints (mm) here
-current_waypoint = 0;				# Waypoint counter
+current_waypoint = 0;						# Waypoint counter
 
-#initialize with the first waypoints as the target
+# Initialize Roomba location object with the first waypoints as the target
 roomba_pos = roomba_class.Roomba_Position(waypoints[0][0], waypoints[0][1]);
+
 while (current_waypoint != DONE_FLAG):
 	try:
 		print "Listening at port %d..." % portToReadData;
@@ -76,8 +81,10 @@ while (current_waypoint != DONE_FLAG):
 		print "Orientation quat (%f, %f, %f, %f)" % (newData[8],newData[9],newData[10],newData[11]);
 		print "Yaw from quat: %f" % math.atan2(2.0*(q0*q3 + q1*q2), 1.0 - 2.0*(q2*q2 + q3*q3));
 		
+		# Main movement function here
 		current_waypoint = roomba_move.move_loop(bot, roomba_pos, waypoints, current_waypoint,
 				x_estimate, y_estimate, q0, q1, q2, q3);
+
 		connSock.close();
 	except Exception, e:
 		traceback.print_exc();

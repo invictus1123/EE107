@@ -1,4 +1,4 @@
-        # The MIT License
+# The MIT License
 #
 # Copyright (c) 2007 Damon Kohler
 # Copyright (c) 2015 Jonathan Le Roux (Modifications for Create 2)
@@ -106,8 +106,8 @@ class SerialCommandInterface(object):
     
     """
 
-    def __init__(self):
-        com = '/dev/tty.usbserial-DA01NSSH'  #This should not be hard coded...
+    def __init__(self, com):
+        #com = '/dev/tty.usbserial-DA01NSSH'  #This should not be hard coded...
         baud = 115200; 
         
         self.ser = serial.Serial()
@@ -164,9 +164,9 @@ class Create2(object):
     
     """
     
-    def __init__(self):
-        
-        self.SCI = SerialCommandInterface()
+    def __init__(self, com):
+        print com;
+        self.SCI = SerialCommandInterface(com)
         self.config = Config()
         self.config.load()
         self.decoder = sensorPacketDecoder(dict(self.config.data['sensor group packet lengths']))
