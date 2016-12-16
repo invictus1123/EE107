@@ -14,7 +14,7 @@ bot = create2api.Create2();
 bot.start();
 bot.safe();
 
-portno = 6000; # 6000 if getting real data, 23000 for emulator data
+portno = 23000; # 6000 if getting real data, 23000 for emulator data
 laptopHostname = socket.gethostbyname(socket.gethostname())
 serverHostname = 'ee107server.stanford.edu';
 macNUC = 'C03FD560BEEF'; # 12 characters
@@ -53,7 +53,7 @@ except Exception, e:
 newData = "";
 
 # Intialize waypoints and Roomba objects
-action_count = MAX_ACTION_COUNT;	# Counts iterations until next Roomba command
+#action_count = MAX_ACTION_COUNT;	# Counts iterations until next Roomba command
 waypoints = [[-40,70]];		# Set waypoints (mm) here
 current_waypoint = 0;				# Waypoint counter
 

@@ -84,5 +84,11 @@ class Roomba_Position(object):
 		self.target_y = waypoint_y;
 		
 	def get_angle(self):
-		return math.atan2(self.target_heading_y, self.target_heading_x) \
+		temp_angle = math.atan2(self.target_heading_y, self.target_heading_x) \
 		- math.atan2(self.current_heading_y, self.current_heading_x);
+		if (temp_angle > math.pi):
+			return -(2*math.pi - temp_angle);
+		elif(temp_angle < -math.pi):
+			return (2*math.pi + temp_angle);
+		else:
+			return temp_angle;

@@ -13,10 +13,6 @@ bot.safe()
 
 # bot.set_day_time('Friday', 17, 40)
 
-#bot.drive_straight(100)
-#time.sleep(1)
-bot.turn_clockwise(100)
-time.sleep(5.97)
 bot.drive_straight(0)
 
 #/print 'Voltage: ' + str(bot.sensors('voltage'))
