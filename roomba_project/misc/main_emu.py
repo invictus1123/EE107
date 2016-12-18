@@ -14,10 +14,10 @@ bot = create2api.Create2();
 bot.start();
 bot.safe();
 
-portno = 23000; # 6000 if getting real data, 23000 for emulator data
+portno = 0 # (omitted)
 laptopHostname = socket.gethostbyname(socket.gethostname())
-serverHostname = 'ee107server.stanford.edu';
-macNUC = 'C03FD560BEEF'; # 12 characters
+serverHostname = #(omitted)
+macNUC = '0' #(omitted)
 portToReadData = 0;
 
 # Connect to server, get port number for localizer data
